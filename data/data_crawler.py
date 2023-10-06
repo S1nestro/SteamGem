@@ -12,7 +12,8 @@ def get_game_details_and_review(game_id):
 
     try:
         response = requests.get(url)
-        response.raise_for_status()  # 引发HTTP错误的异常
+        # 引发HTTP错误的异常
+        response.raise_for_status()
 
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -28,6 +29,7 @@ def get_game_details_and_review(game_id):
         review_label_tag = soup.find('span', {'class': 'game_review_summary'})
         if review_label_tag:
             review_text = review_label_tag.text.strip()
+            # 如果用户评价过少不足以生成评价标签，默认Mixed
             if "user reviews" in review_text:
                 review_label = 'Mixed'
             else:

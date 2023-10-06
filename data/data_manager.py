@@ -10,13 +10,6 @@ from config import API_KEY, STEAM_API_BASE_URL
 from data.data_API import get_user_name, get_games, get_friends_list, get_global_average_achievement_count, \
     get_achievement_count
 
-# 改成动态获取
-START_USER = "76561198381625583"
-
-
-# 76561198381625583
-# 76561198315311042
-# 76561199155209999
 
 # 检查该用户是否为公开账户，是则返回他的好友列表和游戏列表以避免多次请求API，不是则返回None
 def is_user_data_public(steam_id):
@@ -77,13 +70,13 @@ def process_game_data(session, user_id, game_info):
         print(f"An error occurred while processing user: {user_id}{game_name_msg}. Error: {str(e)}")
 
 
-def fetch_data():
+def fetch_data(start_user):
     start_time = time.time()
 
     print('fetch 启动！')
     session = db.session()
 
-    initial_id = START_USER
+    initial_id = start_user
     # 定义已处理过的用户集合，防止好友之间互查嵌套
     users_processed = set()
     # 定义好友队列，把每个用户的好友加入对列以防止初始用户的好友不足50
@@ -93,24 +86,25 @@ def fetch_data():
 
     try:
         while user_queue:
+            # source_id: 好友是从哪来的
             current_id, source_id = user_queue.popleft()
-
-            if current_id in users_processed:  # 如果已经处理过这个用户，跳过
+            # 如果已经处理过这个用户，跳过
+            if current_id in users_processed:
                 continue
-
-            users_processed.add(current_id)  # 标记当前用户为已处理
-
-            is_public, friends, games = is_user_data_public(current_id)  # 获取当前用户的公开状态，好友列表和游戏列表
-
+            # 标记当前用户为已处理
+            users_processed.add(current_id)
+            # 获取当前用户的公开状态，好友列表和游戏列表
+            is_public, friends, games = is_user_data_public(current_id)
+            # 向valid_users中添加用户的游戏数据
             if is_public:
-                if games:  # 向valid_users中添加用户的游戏数据
+                if games:
                     valid_users[current_id] = games
 
                 # 如果是初始用户或者好友数量不足50，则将好友加入队列
                 if not source_id or len(valid_users) < 50:
                     user_queue.extend([(f, current_id) for f in friends if f not in users_processed])
-
-            if len(valid_users) >= 50:  # 如果收集到足够的用户，停止
+            # 如果收集到足够的用户，停止
+            if len(valid_users) >= 50:
                 print(f"Collected enough users: {len(valid_users)}")
                 break
 

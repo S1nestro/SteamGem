@@ -1,8 +1,17 @@
 from flask import Flask
+from sqlalchemy.orm import sessionmaker
 from extensions import db
 from config import Config
 from data.data_manager import fetch_data
+from model.game_recommender import main_recommendation_pipeline
 
+# 改成动态获取
+START_USER = "76561199155209999"
+
+
+# 76561198381625583
+# 76561198315311042
+# 76561199155209999
 
 def create_application():
     application = Flask(__name__)
@@ -16,11 +25,19 @@ def create_application():
 
 app = create_application()
 
-
 with app.app_context():
-    # fetch_data()
+    # fetch_data(START_USER)
+    user_preferences = {
+        'preferred_categories': ['Action', 'Adventure'],  # 用户偏好的游戏类型
+        'release_date_range': ('1999-01-01', '2022-12-31'),  # 用户偏好的游戏发行日期范围
+    }
+    filtered_recommendations = main_recommendation_pipeline(START_USER, user_preferences, db.session)
+
+    encoded_string = str(filtered_recommendations).encode('utf-8')
+    print(encoded_string)
 
 
+# 获取封面图 https://steamcdn-a.akamaihd.net/steam/apps/{appid}/header.jpg
 
 @app.route('/')
 def hello_world():

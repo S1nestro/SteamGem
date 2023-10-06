@@ -35,14 +35,17 @@ def get_games(steam_id):
         if 'response' not in response or 'games' not in response['response']:
             return []
         games = response['response']['games']
+        # 按照游玩时长筛选前10个游戏
         games = sorted(games, key=lambda x: x['playtime_forever'], reverse=True)[:10]
-
+        # 定义processed_games填充游戏详情
         processed_games = []
         for game in games:
             appid = game['appid']
+            # 转换成utf-8乱码
             game_name = game['name'].encode('utf-8').decode('utf-8')
             playtime = game.get('playtime_forever', 0)
             release_date, genres, rating = get_game_details_and_review(appid)
+            # 如果发行日期和类别有空值，我们认为这个游戏不值得被参考
             if release_date and genres:
                 processed_games.append((appid, game_name, playtime, release_date, genres, rating))
                 # try:
@@ -63,9 +66,11 @@ def get_achievement_count(steam_id, appid):
 
         if 'playerstats' in response and 'error' in response['playerstats']:
             if "Profile is not public" in response['playerstats']['error'] or "Requested app has no stats" in response['playerstats']['error']:
-                return 0  # 表示用户资料不公开或没有数据
+                # 表示用户资料不公开或没有数据
+                return 0
             else:
-                raise Exception(response['playerstats']['error'])  # 抛出其他未知错误
+                # 抛出其他未知错误
+                raise Exception(response['playerstats']['error'])
 
         if 'playerstats' not in response or 'achievements' not in response['playerstats']:
             return 0
