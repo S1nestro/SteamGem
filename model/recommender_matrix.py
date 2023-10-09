@@ -168,10 +168,8 @@ def predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_da
         return numerator / denominator
 
     except Exception as e:
-        # 记录异常信息和堆栈跟踪
         error_message = f"Error predicting user rating for game {game_id}. Error: {str(e)}"
-        traceback.print_exc()  # 打印堆栈跟踪到控制台
-        # 这里你可以将异常信息记录到日志文件或其他地方
+        traceback.print_exc()
         raise Exception(error_message)
 
 
