@@ -1,7 +1,7 @@
 ﻿body {
     font-family: Georgia, sans-serif;
     margin: 0; /* 移除默认的外边距 */
-    color: rgb(15, 255, 255); /* 设置字体颜色 */
+    color: rgb(255, 255, 255); /* 设置字体颜色 */
     overflow: hidden; /* 隐藏滚动条，防止视频背景出现滚动 */
 }
 
@@ -18,6 +18,7 @@
     object-fit: cover;
 }
 
+/* 默认格式 */
 #container {
     position: relative;
     z-index: 1; /* 确保内容位于视频的上方 */
@@ -27,6 +28,35 @@
     text-align: center; /* 确保文本也居中 */
 }
 
+/* 喇叭标志 */
+#speaker-icon {
+    position: absolute;
+    top: 20px;
+    right: 130px;  /* 调整位置 */
+    width: 24px;   /* 调整大小 */
+    height: 24px;
+}
+
+/* 音量滑块 */
+#volume-control {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 100px;
+}
+
+/* 背景透明框 */
+#overlay-box {
+    position: absolute;
+    top: 100px;
+    left: 25%;
+    width: 835px;
+    height: 230px;
+    background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
+    border-radius: 10px;
+    transition: height 0.3s ease-in-out; /* 添加过渡效果 */
+    z-index: -500; /* 确保它位于其他内容的下方 */
+}
 #logo {
     font-family: STHupo, sans-serif;
     margin-top: 50px;
@@ -71,11 +101,35 @@
     margin: 0 auto; /* center .game-group within #games-list */
 }
 
+#info-box-container {
+    position: relative;
+}
+/*price和reason区域*/
+.info-box {
+    position: absolute;
+    top: 2px; /* 调整为合适的值 */
+    right: 300px; /* 调整为合适的值 */
+    width: 570px;
+    height: 370px;
+    background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
+    border-radius: 10px;
+    display: flex;
+    z-index: 1;
+    text-align: left; /* 文本向左对齐 */
+    color: #ffffff; /* 纯白色字体 */
+    line-height: 1.5; /* 增加行高以在两段之间创建空间 */
+    padding: 10px; /* 添加内填充以确保文本不会贴近边框 */
+}
+
+
+
 #game-display {
+    margin-top: 50px;
     position: relative;
     width: 700px; /* 根据需要设置宽度 */
     margin: auto;
     overflow: hidden; /* 隐藏溢出的内容 */
+    transition: transform 0.3s ease-out;
 }
 
 .carousel {
@@ -89,7 +143,6 @@
     }
 
 #prev-button, #next-button {
-    /* 其他样式 */
     border: none;
     border-radius: 50%;
     width: 40px; /* 或其他合适的值 */
@@ -100,21 +153,21 @@
     font-size: 24px; /* 字体大小 */
     line-height: 40px; /* 使箭头垂直居中 */
     text-align: center; /* 使箭头水平居中 */
-    opacity: 0.5; /* 可以调整透明度 */
+    opacity: 0.5; /* 调整透明度 */
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
 
     #prev-button:hover, #next-button:hover {
-        background-color: rgba(255, 255, 255, 0.9); /* 鼠标悬停时的背景颜色 */
+        background-color: rgba(255, 255, 255, 0.3); /* 鼠标悬停时的背景颜色 */
     }
 #prev-button {
-    left: 0px; /* 调整为合适的值 */
+    left: 70px; /* 调整为合适的值 */
 }
 
 #next-button {
-    right: 0px; /* 调整为合适的值 */
+    right: 70px; /* 调整为合适的值 */
 }
 
 #carousel-dots {
@@ -127,27 +180,34 @@
     margin-bottom: 10px;
 }
 
-    #carousel-dots .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #ccc;
-        cursor: pointer;
-        opacity: 0.9; /* 非活动点的透明度 */
-    }
+#carousel-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
 
-        #carousel-dots .dot.active {
-            background-color: #333;
-            opacity: 0.5; /* 活动点的透明度 */
-        }
+#carousel-dots .dot:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* 鼠标悬停时的背景颜色 */
+}
 
+#carousel-dots .dot.active {
+    width: 40px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.9); /* 活动点的背景颜色 */
+}
 
+#carousel-dots .dot.active:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* 活动点的背景颜色在鼠标悬停时 */
+}
 /* 新添加的样式，设置图片和游戏名字的样式 */
 .carousel img {
-    width: 90%; /* 或者指定固定宽度，例如 width: 300px; */
-    height: 90%; /* 或者指定固定高度，例如 height: 200px; */
-    object-fit: cover; /* 保持图片的宽高比，同时填充容器 */
-    border: none; /* 添加一个白色边框 */
+    width: 570px; /* 或者指定固定宽度，例如 width: 300px; */
+    height: 370px; /* 或者指定固定高度，例如 height: 200px; */
+    object-fit: fill; /* 保持图片的宽高比，同时填充容器 */
+    border: none; /* 添加边框 */
     border-radius: 10px; /* (可选)为图片添加圆角 */
 }
 
