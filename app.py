@@ -26,7 +26,7 @@ def create_application():
 app = create_application()
 
 with app.app_context():
-    fetch_data(START_USER)
+    # fetch_data(START_USER)
     user_preferences = {
         'preferred_categories': ['Action', 'Adventure'],  # 用户偏好的游戏类型
         'release_date_range': ('1970-01-01', '2023-10-07'),  # 用户偏好的游戏发行日期范围

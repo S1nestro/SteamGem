@@ -1,5 +1,5 @@
 from model.recommender_matrix import fetch_user_game_data, fetch_game_features, calculate_game_similarity_matrix, \
-    recommend_games_for_user, filter_user_owned_games
+    recommend_games_for_user, filter_user_owned_games, get_game_details
 
 
 def main_recommendation_pipeline(user_id, user_preferences, session):
@@ -18,6 +18,8 @@ def main_recommendation_pipeline(user_id, user_preferences, session):
     # 根据用户的Steam账号，过滤掉用户已拥有的游戏
     filtered_recommendations = filter_user_owned_games(user_id, recommended_games)
 
-    return filtered_recommendations
+    games_with_details = get_game_details(filtered_recommendations)
+
+    return games_with_details
 
 
