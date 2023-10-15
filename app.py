@@ -31,9 +31,9 @@ with app.app_context():
         'preferred_categories': ['Action', 'Adventure'],  # 用户偏好的游戏类型
         'release_date_range': ('1970-01-01', '2023-10-07'),  # 用户偏好的游戏发行日期范围
     }
-    filtered_recommendations = main_recommendation_pipeline(START_USER, user_preferences, db.session)
+    games_with_details = main_recommendation_pipeline(START_USER, user_preferences, db.session)
 
-    encoded_string = str(filtered_recommendations).encode('utf-8')
+    encoded_string = str(games_with_details).encode('utf-8')
     print(encoded_string)
 
 
