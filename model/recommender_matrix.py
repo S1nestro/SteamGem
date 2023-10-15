@@ -6,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sqlalchemy.orm import joinedload
 from Entity.Game import Game, GameType
 from Entity.GameRecord import GameRecord
-from config import STEAM_API_BASE_URL, API_KEY
+from config import STEAM_API_BASE_URL, API_KEY, ISTHEREANYDEAL_API, ISTHEREANYDEAL_API_BASE_URL
 
 REVIEW_TAG_WEIGHT = {
     'Overwhelmingly Positive': 1.5,
@@ -254,3 +254,41 @@ def filter_user_owned_games(user_id, recommended_games_list):
     except Exception as e:
         print(f"Error filtering owned games for user {user_id}. Error: {e}")
         return []
+
+
+# 获取游戏的价格和推荐理由等细节
+def get_game_details(filtered_recommendations):
+    game_details_list = []
+
+    for appid, game_name in filtered_recommendations:
+        shop, lowest_price, url = get_current_lowest_price(game_name)
+        if lowest_price:
+            print(f"The current lowest price for {game_name} (AppID: {appid}) is: ${lowest_price} at {shop},link is {url}.")
+            game_details_list.append((appid, game_name, shop, lowest_price, url))
+        else:
+            print(f"Could not find price data for {game_name} (AppID: {appid}).")
+
+    return game_details_list
+
+
+def get_current_lowest_price(game_name):
+    # 首先根据游戏名称进行搜索，获取plain标识
+    search_url = f"{ISTHEREANYDEAL_API_BASE_URL}v02/search/search/?key={ISTHEREANYDEAL_API}&q={game_name}"
+    response = requests.get(search_url)
+    data = response.json()
+    # 检查是否有匹配的游戏结果
+    if not data['data']['results']:
+        return None, None, None
+    # v02端点支持模糊匹配，选第一个相似度最高的
+    game_plain = data['data']['results'][0]['plain']
+
+    prices_url = f"https://api.isthereanydeal.com/v01/game/prices/?key={ISTHEREANYDEAL_API}&plains={game_plain}"
+
+    response = requests.get(prices_url)
+    prices_data = response.json()
+    # 检查是否有价格数据
+    if not prices_data['data'][game_plain]['list']:
+        return None, None, None
+    # 选择最低的价格
+    lowest_price_shop = prices_data['data'][game_plain]['list'][0]
+    return lowest_price_shop['shop']['name'], lowest_price_shop['price_new'], lowest_price_shop['url']
