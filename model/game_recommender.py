@@ -15,7 +15,7 @@ def main_recommendation_pipeline(user_id, user_preferences, session):
     # 4使用上述数据为特定用户生成推荐的游戏
     recommended_games = recommend_games_for_user(user_id, user_preferences, game_data, game_similarity, user_game_data)
 
-    # 根据用户的Steam账号，过滤掉用户已拥有的游戏
+    # 根据用户的Steam账号，过滤掉用户已拥有的游戏，返回一个推荐列表，数据结构为[(game_id, game_name, game_image_url), ...]
     filtered_recommendations = filter_user_owned_games(user_id, recommended_games)
 
     games_with_details = get_game_details(filtered_recommendations)
