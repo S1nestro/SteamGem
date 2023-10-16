@@ -133,44 +133,113 @@ def calculate_game_similarity_matrix(game_features):
 
 
 # 特定用户对给定游戏的预测评分
+# def predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_data):
+#     try:
+#         # 获取用户玩过的游戏
+#         user_played_games = user_game_data
+
+#         if not user_played_games:
+#             return 0
+
+#         # 加入权重系数
+#         weight_playtime = 0.7  # 假设玩家的游玩时长占总体权重的70%
+#         weight_achievement_ratio = 0.3  # 考虑成就完成比率的权重
+
+#         numerator = sum(
+#             game_similarity[game_id][other_game_id] *
+#             REVIEW_TAG_WEIGHT.get(user_played_games[other_game_id]['rating']) *
+#             (weight_playtime * user_played_games[other_game_id]['playtime'] +
+#              weight_achievement_ratio * (
+#                  user_played_games[other_game_id]['achievements_unlocked'] /
+#                  user_played_games[other_game_id]['global_achievements_avg'] if user_played_games[other_game_id][
+#                                                                                     'global_achievements_avg'] != 0 else 0
+#              ))#计算用户对游戏评分的方法为：游戏相似度*评价标签权重*（游玩时长权重*游玩时长+成就完成比率权重*（成就完成数/游戏平均成就数））
+#             for other_game_id in user_played_games if other_game_id in game_similarity[game_id]
+#         )
+
+#         denominator = sum(
+#             abs(game_similarity[game_id][other_game_id])
+#             for other_game_id in user_played_games if other_game_id in game_similarity[game_id]
+#         )#这部分是在计算分母，分母是所有游戏相似度的绝对值之和
+
+#         if denominator == 0:
+#             return 0
+
+#         return numerator / denominator
+
+#     except Exception as e:
+#         error_message = f"Error predicting user rating for game {game_id}. Error: {str(e)}"
+#         traceback.print_exc()
+#         raise Exception(error_message)
 def predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_data):
     try:
-        # 获取用户玩过的游戏
+        # 获取用户已玩过的游戏的数据
         user_played_games = user_game_data
 
+        # 如果用户没有玩过任何游戏，则无法进行预测，返回评分0和相应信息
         if not user_played_games:
-            return 0
+            return 0, "You haven't played enough games for us to determine your preferences."
 
-        # 加入权重系数
-        weight_playtime = 0.7  # 假设玩家的游玩时长占总体权重的70%
-        weight_achievement_ratio = 0.3  # 考虑成就完成比率的权重
+        # 定义权重：游玩时间的权重为70%，成就完成率的权重为30%
+        weight_playtime = 0.7  
+        weight_achievement_ratio = 0.3  
 
-        numerator = sum(
-            game_similarity[game_id][other_game_id] *
-            REVIEW_TAG_WEIGHT.get(user_played_games[other_game_id]['rating']) *
-            (weight_playtime * user_played_games[other_game_id]['playtime'] +
-             weight_achievement_ratio * (
-                 user_played_games[other_game_id]['achievements_unlocked'] /
-                 user_played_games[other_game_id]['global_achievements_avg'] if user_played_games[other_game_id][
-                                                                                    'global_achievements_avg'] != 0 else 0
-             ))
-            for other_game_id in user_played_games if other_game_id in game_similarity[game_id]
-        )
+        max_contribution = 0  # 初始化最大贡献度为0
+        most_influential_game = None  # 初始化最有影响力的游戏
+        contribution_details = {}  # 用于存储每个游戏的贡献度详情
 
+        # 遍历用户玩过的每个游戏，计算每个游戏对推荐的贡献度
+        for other_game_id in user_played_games:
+            if other_game_id in game_similarity[game_id]:
+                # 计算单个游戏的贡献度
+                individual_contribution = game_similarity[game_id][other_game_id] * \
+                                          REVIEW_TAG_WEIGHT.get(user_played_games[other_game_id]['rating']) * \
+                                          (weight_playtime * user_played_games[other_game_id]['playtime'] +
+                                           weight_achievement_ratio * (
+                                               user_played_games[other_game_id]['achievements_unlocked'] /
+                                               user_played_games[other_game_id]['global_achievements_avg'] if user_played_games[other_game_id][
+                                                                                                                'global_achievements_avg'] != 0 else 0
+                                           ))
+
+                # 存储该游戏的贡献度
+                contribution_details[other_game_id] = individual_contribution
+
+                # 如果当前游戏的贡献度高于之前记录的最大贡献度，则更新最大贡献度和最有影响力的游戏
+                if individual_contribution > max_contribution:
+                    max_contribution = individual_contribution
+                    most_influential_game = other_game_id
+
+        # 计算贡献度的总和，作为分子
+        numerator = sum(contribution_details.values())
+
+        # 计算所有相关游戏相似度绝对值的总和，作为分母
         denominator = sum(
             abs(game_similarity[game_id][other_game_id])
             for other_game_id in user_played_games if other_game_id in game_similarity[game_id]
         )
 
+        # 如果分母为0，说明没有足够的数据来进行可靠的推荐，返回评分0和相应信息
         if denominator == 0:
-            return 0
+            return 0, "Not enough data to calculate a reliable recommendation."
 
-        return numerator / denominator
+        # 计算预测评分
+        prediction = numerator / denominator
+
+        # 根据最有影响力的游戏，生成推荐理由
+        if most_influential_game:
+            reason = f"We're recommending this game based on your experience with '{most_influential_game}', which had the most similar gameplay and achievements."
+        else:
+            reason = "Recommended based on a combination of various factors from your gaming history."
+
+        # 返回预测评分和推荐理由
+        return prediction, reason
 
     except Exception as e:
+        # 如果在执行过程中遇到错误，打印错误并抛出异常
         error_message = f"Error predicting user rating for game {game_id}. Error: {str(e)}"
         traceback.print_exc()
         raise Exception(error_message)
+
 
 
 def weight_predicted_rating(game_id, predicted_rating, user_preferences, game_data):
@@ -206,16 +275,22 @@ def recommend_games_for_user(user_id, user_preferences, game_data, game_similari
         unplayed_games = all_games - user_played_games
 
         predicted_ratings = {}
-        for game_id in unplayed_games:
-            predicted_rating = predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_data)
+        reasons = {}  # 创建一个字典来保存每个游戏的推荐理由
+        for game_id in unplayed_games: #对每一个未玩过的游戏进行预测评分
+            predicted_rating, reason = predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_data)
             weighted_rating = weight_predicted_rating(game_id, predicted_rating, user_preferences, game_data)
             predicted_ratings[game_id] = weighted_rating
-
-        # 根据评分排序并获取评分最高的100款游戏的ID
+            reasons[game_id] = reason  # 将理由保存在字典中
+        '''# 根据评分排序并获取评分最高的100款游戏的ID
         top_100_game_ids = sorted(predicted_ratings.keys(), key=lambda x: predicted_ratings[x], reverse=True)[:100]
 
         # 根据ID从game_data中提取游戏名称
-        recommended_games = [(game_id, game_data[game_id]['name']) for game_id in top_100_game_ids]
+        recommended_games = [(game_id, game_data[game_id]['name']) for game_id in top_100_game_ids]'''
+        # 根据预测的评分对游戏进行排序，获取评分最高的100款游戏
+        top_100_game_ids = sorted(predicted_ratings.keys(), key=lambda x: predicted_ratings[x], reverse=True)[:100]
+
+        # 创建一个列表，包含每款游戏的id、名称以及对应的推荐理由
+        recommended_games = [(game_id, game_data[game_id]['name'], reasons[game_id]) for game_id in top_100_game_ids]
 
         return recommended_games
 
@@ -246,7 +321,7 @@ def filter_user_owned_games(user_id, recommended_games_list):
         user_owned_game_ids = set(fetch_user_games(user_id))
 
         # 过滤掉用户已经拥有的游戏
-        filtered_recommendations = [(appid, name) for appid, name in recommended_games_list if
+        filtered_recommendations = [(appid, name,reason) for appid, name,reason in recommended_games_list if
                                     appid not in user_owned_game_ids]
 
         # 从筛选后的推荐列表中选择前10个
@@ -260,11 +335,11 @@ def filter_user_owned_games(user_id, recommended_games_list):
 def get_game_details(filtered_recommendations):
     game_details_list = []
 
-    for appid, game_name in filtered_recommendations:
+    for appid, game_name,reason in filtered_recommendations:
         shop, lowest_price, url = get_current_lowest_price(game_name)
         if lowest_price:
             print(f"The current lowest price for {game_name} (AppID: {appid}) is: ${lowest_price} at {shop},link is {url}.")
-            game_details_list.append((appid, game_name, shop, lowest_price, url))
+            game_details_list.append((appid, game_name, shop, lowest_price, url,reason))#将游戏的详细信息添加到列表中,增加了reason
         else:
             print(f"Could not find price data for {game_name} (AppID: {appid}).")
 
