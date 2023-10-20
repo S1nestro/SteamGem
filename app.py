@@ -1,9 +1,39 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from sqlalchemy.orm import sessionmaker
 from extensions import db
 from config import Config
 from data.data_manager import fetch_data
 from model.game_recommender import main_recommendation_pipeline
+
+app = Flask(__name__)
+
+@app.route('/receive-data', methods=['POST'])
+def receive_data():
+    # 获取前端发送的JSON数据
+    data = request.json
+
+    userId = data.get('userId')
+    gameTypes = data.get('gameTypes')
+    fromDate = data.get('fromDate')
+    toDate = data.get('toDate')
+
+    # 这里进行你的数据处理...
+
+    # 假设你的处理完成后，你得到了以下数据结构
+    responseData = [
+        {
+            "name": "Game 1",
+            "link": "Link 1",
+            "image": "Image 1",
+            "reason": "Reason 1",
+            "price": "Price 1"
+        },
+        # ... 更多游戏数据
+    ]
+
+    # 发送响应数据回前端
+    return jsonify(responseData)
+
 
 # 改成动态获取
 START_USER = "76561199155209999"
