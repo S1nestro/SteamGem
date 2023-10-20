@@ -75,6 +75,29 @@
 #confirm-button, #try-again-button {
     margin-top: 10px; /* 调整按钮的间隙 */
 }
+.input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#user-id {
+    width: 200px; /* 根据需要调整宽度 */
+}
+/*进度条*/
+#progress-bar-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+#progress-bar {
+    width: 0;
+    height: 4px;
+    background-color: #3498db;
+}
 
 #game-title {
     font-size: 36px;
@@ -220,3 +243,38 @@
     color: red;
     font-weight: bold;
 }
+
+
+
+#info-icon {
+    width: 15px; /* 宽度 */
+    height: 15px; /* 高 */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        background-color: transparent; /* 去掉背景颜色 */
+        color: #fff;
+        text-align: center;
+        border-radius: 5px;
+        padding: 5px;
+        position: fixed; /* 更改为固定位置 */
+        top: 350px; /* 调整位置 */
+        left: 200px;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        opacity: 0;
+        transition: opacity 0.3s;
+        width: 300px;
+        height: 100px;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
