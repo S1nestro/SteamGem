@@ -1,18 +1,18 @@
 const video = document.getElementById('video-background');
 const volumeControl = document.getElementById('volume-control');
 
-// Ò»µ©ÊÓÆµ¿ÉÒÔ²¥·Å£¬È¡Ïû¾²Òô
+// Ò»ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½Ô²ï¿½ï¿½Å£ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 video.addEventListener('canplay', () => {
     video.muted = false;
 });
 
-// ´¦ÀíÒôÁ¿¿ØÖÆ»¬¿éµÄÖµ¸ü¸ÄÊÂ¼þ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ»ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
 volumeControl.addEventListener('input', () => {
     video.volume = volumeControl.value;
 });
 
-// ¼ÙÉèÄãµÄºó¶ËÔËÐÐÔÚ http://localhost:5000
-const backendUrl = 'http://localhost:5000/get-game-details';
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ http://localhost:5000
+const backendUrl = 'http://localhost:5000/receive-data';
 
 function sendUserData() {
     const userId = document.getElementById('user-id').value;
@@ -24,27 +24,27 @@ function sendUserData() {
     const fromYear2 = document.getElementById('from-year2').value;
     const timeLimitation = `${fromYear1}-${fromMonth1},${fromYear2}-${fromMonth2}`;
 
-    fetch('http://localhost:5000/get-game-details', {
+    fetch('http://localhost:5000/receive-data', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',  // ÉèÖÃÄÚÈÝÀàÐÍÎª±íµ¥±àÂë
+            'Content-Type': 'application/x-www-form-urlencoded',  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         },
         body: new URLSearchParams({
             user_id: userId,
             game_type: gameTypes,
             time_limitation: timeLimitation
-        })  // ½«Êý¾Ý±àÂëÎªURL²éÑ¯×Ö·û´®
+        })  // ï¿½ï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ÎªURLï¿½ï¿½Ñ¯ï¿½Ö·ï¿½ï¿½ï¿½
     })
         .then(response => response.json())
         .then(data => {
-            const responseData = data; // ÕâÀïµÄ data ¾ÍÊÇÄãµÄÓÎÏ·ÏêÇéÁÐ±í
-        // ... ÆäËû´úÂë ...
+            const responseData = data; // ï¿½ï¿½ï¿½ï¿½ï¿½ data ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
+        // ... ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ...
     })
     .catch(error => {
         console.error('There has been a problem with your fetch operation:', error);
     });
 }
-// ¼ÙÉèºó¶Ë·µ»ØµÄÊý¾Ý±£´æÔÚ±äÁ¿ responseData ÖÐ
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ý±ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ responseData ï¿½ï¿½
 /*
 const responseData = [
     {
@@ -56,30 +56,30 @@ const responseData = [
     },
 ];
 */
-// ÉùÃ÷È«¾Ö±äÁ¿
+// ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½
 let recommendationsShown = false;
 let currentGameIndex;
 let nameClicked = false
-//½ø¶ÈÌõÏà¹ØÈ«¾Ö±äÁ¿
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½
 let progressBarValue = 0;
 let progressBarInterval;
 let carouselInterval;
 let carouselDisplayed = false;
 
 
-//¸üÐÂ½ø¶ÈÌõ
+//ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½ï¿½
 function updateProgressBar() {
-    // Çå³ýÒÑÓÐµÄ½ø¶ÈÌõ¼ÆÊ±Æ÷
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
     clearInterval(progressBarInterval);
 
     progressBarInterval = setInterval(() => {
-        // Ã¿¸öÊ±¼ä¼ä¸ôÔö¼Ó½ø¶ÈÌõµÄÖµ
-        progressBarValue += 2;  // Ã¿100ºÁÃëÔö¼Ó2%£¬×Ü¹²ÐèÒª5Ãë£¨5000ºÁÃë£©´Ó0%µÝÔöµ½100%
+        // Ã¿ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+        progressBarValue += 2;  // Ã¿100ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½2%ï¿½ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½Òª5ï¿½ë£¨5000ï¿½ï¿½ï¿½ë£©ï¿½ï¿½0%ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½100%
 
-        // ¸üÐÂ½ø¶ÈÌõµÄ¿í¶È
+        // ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½
         document.getElementById('progress-bar').style.width = progressBarValue + '%';
 
-        // µ±½ø¶ÈÌõÖµ´ïµ½100%Ê±£¬Çå³ý¼ÆÊ±Æ÷²¢ÏÔÊ¾ÂÖ²¥Í¼
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ïµ½100%Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ö²ï¿½Í¼
         if (progressBarValue >= 100) {
             clearInterval(progressBarInterval);
             if (!carouselDisplayed) {
@@ -87,28 +87,28 @@ function updateProgressBar() {
             }
         }
 
-        // Èç¹ûÂÖ²¥Í¼ÒÑÏÔÊ¾£¬ÖØÖÃ½ø¶ÈÌõÖµ²¢Çå³ý¼ÆÊ±Æ÷
+        // ï¿½ï¿½ï¿½ï¿½Ö²ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ã½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
         if (carouselDisplayed) {
             progressBarValue = 0;
             document.getElementById('progress-bar').style.width = '0%';
             clearInterval(progressBarInterval);
         }
-    }, 100);  // 100ºÁÃë¸üÐÂÒ»´Î½ø¶ÈÌõÖµ
+    }, 100);  // 100ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Î½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
 }
 
 function displayCarousel() {
-    // ÕâÀïÊÇÏÔÊ¾ÂÖ²¥Í¼µÄ´úÂë
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ö²ï¿½Í¼ï¿½Ä´ï¿½ï¿½ï¿½
     carouselDisplayed = true;
 }
 function displayRecommendations() {
     currentGameIndex = 0;
-    // Çå³ý¾ÉµÄÍÆ¼ö
+    // ï¿½ï¿½ï¿½ï¿½Éµï¿½ï¿½Æ¼ï¿½
     const gamesList = document.getElementById('games-list');
     const carousel = document.getElementById('carousel');
     gamesList.innerHTML = '';
     carousel.innerHTML = '';
 
-    // ´ÓDOM»ñÈ¡Êý¾Ý
+    // ï¿½ï¿½DOMï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
     const userId = document.getElementById('user-id').value;
     const gameTypeCheckboxes = document.querySelectorAll('input[name="game-type"]');
     const selectedGameTypes = Array.from(gameTypeCheckboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
@@ -117,7 +117,7 @@ function displayRecommendations() {
     const fromMonth2 = document.getElementById('from-month2').value;
     const fromYear2 = document.getElementById('from-year2').value;
 
-    // ½«Êý¾Ý×é×°³ÉÒ»¸ö¶ÔÏó
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     const dataToSend = {
         userId: userId,
         gameTypes: selectedGameTypes,
@@ -125,7 +125,7 @@ function displayRecommendations() {
         toDate: `${fromYear2}-${fromMonth2}`
     };
 
-    // Ê¹ÓÃfetch·¢ËÍÊý¾Ýµ½ºó¶Ë
+    // Ê¹ï¿½ï¿½fetchï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½
     fetch('/receive-data', {
         method: 'POST',
         headers: {
@@ -135,10 +135,10 @@ function displayRecommendations() {
     })
         .then(response => response.json())
         .then(data => {
-            // ½«ÏìÓ¦Êý¾ÝÉèÖÃÎªresponseData
+            // ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªresponseData
             responseData = data;
 
-            // È»ºóµ÷ÓÃ¸üÐÂUIµÄº¯Êý
+            // È»ï¿½ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½UIï¿½Äºï¿½ï¿½ï¿½
             updateCarousel();
         })
         .catch(error => {
@@ -148,33 +148,33 @@ function displayRecommendations() {
 
     let gameGroup = null;
     responseData.forEach((game, index) => {
-        if (index % 2 === 0) {  // ¶ÔÓÚÅ¼ÊýË÷Òý£¬´´½¨ÐÂµÄÓÎÏ·×é
+        if (index % 2 === 0) {  // ï¿½ï¿½ï¿½ï¿½Å¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½Ï·ï¿½ï¿½
             gameGroup = document.createElement('div');
             gameGroup.className = 'game-group';
             gamesList.appendChild(gameGroup);
         }
 
-        // ´´½¨ÓÎÏ·ÁÐ±íÏî
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Ð±ï¿½ï¿½ï¿½
         const gameListItem = document.createElement('div');
         gameListItem.className = 'game-item';
         gameListItem.innerText = game.name;
-        gameListItem.dataset.reason = game.reason;  // ÐÂÔöÊôÐÔ£ºÓÎÏ·ÍÆ¼öÔ­Òò
-        gameListItem.dataset.price = game.price;    // ÐÂÔöÊôÐÔ£ºÓÎÏ·¼Û¸ñ
+        gameListItem.dataset.reason = game.reason;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½Ï·ï¿½Æ¼ï¿½Ô­ï¿½ï¿½
+        gameListItem.dataset.price = game.price;    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô£ï¿½ï¿½ï¿½Ï·ï¿½Û¸ï¿½
 
         gameGroup.appendChild(gameListItem);
-        // ´´½¨ÂÖ²¥Ïî
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½
         const gameDiv = document.createElement('div');
-        gameDiv.className = 'carousel-item';  // Ìí¼ÓÀàÃûÒÔ±ãÔÚ CSS ÖÐÓ¦ÓÃÑùÊ½
+        gameDiv.className = 'carousel-item';  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½ CSS ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Ê½
         gameDiv.innerHTML = `
             <a href="${game.link}" target="_blank">
                 <img src="${game.image}" alt="${game.name}">
             </a>
-            <div class="game-info"></div>  <!-- ÐÂÔöÓÎÏ·ÐÅÏ¢ÈÝÆ÷ -->
+            <div class="game-info"></div>  <!-- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ -->
         `;
         carousel.appendChild(gameDiv);
     });
 
-    // Èç¹ûÕâÊÇÊ×´ÎÏÔÊ¾ÍÆ¼ö£¬ÔòÏÔÊ¾±êÌâºÍ"Try Again"°´Å¥
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´ï¿½ï¿½ï¿½Ê¾ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½"Try Again"ï¿½ï¿½Å¥
     if (!recommendationsShown) {
         const gameTitle = document.getElementById('game-title');
         const tryAgainButton = document.getElementById('try-again-button');
@@ -187,14 +187,14 @@ function displayRecommendations() {
 
     updateCarousel();
 
-    // Òþ²Ø°´Å¥Ö±µ½ÍÆ¼ö±»ÏÔÊ¾
+    // ï¿½ï¿½ï¿½Ø°ï¿½Å¥Ö±ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
     document.getElementById('prev-button').style.display = 'none';
     document.getElementById('next-button').style.display = 'none';
 
-        // ¶¯Ì¬Éú³ÉÔ²µãÇ°£¬ÏÈÇå¿Õ#carousel-dots
+        // ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½#carousel-dots
     const carouselDots = document.getElementById('carousel-dots');
     carouselDots.innerHTML = '';
-    // ¶¯Ì¬Éú³ÉÔ²µã
+    // ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½Ô²ï¿½ï¿½
     responseData.forEach((game, index) => {
         const dot = document.createElement('div');
         dot.className = 'dot';
@@ -204,10 +204,10 @@ function displayRecommendations() {
 
     updateCarousel();
 
-    // ÔÚÕ¹Ê¾ÍÆ¼öÊ±¸Ä±ä·½¿òµÄ´óÐ¡
+    // ï¿½ï¿½Õ¹Ê¾ï¿½Æ¼ï¿½Ê±ï¿½Ä±ä·½ï¿½ï¿½Ä´ï¿½Ð¡
     const overlayBox = document.getElementById('overlay-box');
     overlayBox.style.height = '345px';
-    updateProgressBar();  // ÔÚÏÔÊ¾ÍÆ¼öÊ±¿ªÊ¼ÔËÐÐ½ø¶ÈÌõ
+    updateProgressBar();  // ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Æ¼ï¿½Ê±ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Ð½ï¿½ï¿½ï¿½ï¿½ï¿½
 }
 
 function updateDots() {
@@ -216,7 +216,7 @@ function updateDots() {
         dot.classList.remove('active');
     });
     if (dots.length > 0) {
-        dots[currentGameIndex].classList.add('active');  // ¼ì²é dots Êý×éµÄ³¤¶È
+        dots[currentGameIndex].classList.add('active');  // ï¿½ï¿½ï¿½ dots ï¿½ï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½
     }
 }
 
@@ -231,12 +231,12 @@ function updateCarousel() {
     const transformValue = -currentGameIndex * 100;
     carousel.style.transform = `translateX(${transformValue}%)`;
 
-    // µ±ÍÆ¼ö±»ÏÔÊ¾Ê±£¬ÏÔÊ¾°´Å¥
+    // ï¿½ï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ê±ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Å¥
     document.getElementById('prev-button').style.display = 'block';
     document.getElementById('next-button').style.display = 'block';
 
-    hideMoreInfo();  // µ÷ÓÃ hideMoreInfo º¯ÊýÀ´¸üÐÂ .game-info ÔªËØµÄÄÚÈÝ
-    // ¸üÐÂµ±Ç°ÏÔÊ¾µÄÓÎÏ·Ãû×ÖºÍÌí¼ÓÌáÊ¾
+    hideMoreInfo();  // ï¿½ï¿½ï¿½ï¿½ hideMoreInfo ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ .game-info Ôªï¿½Øµï¿½ï¿½ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½Öºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾
     const currentGame = responseData[currentGameIndex];
     const carouselItems = carousel.getElementsByClassName('carousel-item');
     Array.from(carouselItems).forEach((item, index) => {
@@ -271,26 +271,26 @@ document.getElementById('confirm-button').addEventListener('click', () => {
     const fromMonth2 = document.getElementById('from-month2').value;
     const fromYear2 = document.getElementById('from-year2').value;
     const errorMsg = document.getElementById('error-message');
-    const anyTimeChecked = document.getElementById('any-time-checkbox').checked;  // »ñÈ¡ "Any time" ¸´Ñ¡¿òµÄ×´Ì¬
+    const anyTimeChecked = document.getElementById('any-time-checkbox').checked;  // ï¿½ï¿½È¡ "Any time" ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½×´Ì¬
 
     if (!userId) {
         errorMsg.innerText = 'Please enter your User ID';
-        errorMsg.style.display = 'block';  // ÏÔÊ¾´íÎóÏûÏ¢
+        errorMsg.style.display = 'block';  // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     } else if (!gameTypeChecked || !fromMonth1 || !fromYear1 || !fromMonth2 || !fromYear2) {
         errorMsg.innerText = 'Please complete all the blanks';
-        errorMsg.style.display = 'block';  // ÏÔÊ¾´íÎóÏûÏ¢
+        errorMsg.style.display = 'block';  // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     } else if (!anyTimeChecked && ((fromYear1 > fromYear2) || (fromYear1 == fromYear2 && fromMonth1 > fromMonth2))) {
         errorMsg.innerText = "Please ensure that the date of 'From' is earlier than the date of 'To'";
-        errorMsg.style.display = 'block';  // ÏÔÊ¾´íÎóÏûÏ¢
+        errorMsg.style.display = 'block';  // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
     } else {
-        errorMsg.style.display = 'none';  // Òþ²Ø´íÎóÏûÏ¢
+        errorMsg.style.display = 'none';  // ï¿½ï¿½ï¿½Ø´ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
         displayRecommendations();
     }
 });
 
-//½ø¶ÈÌõ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 function processConfirmation() {
-    // ÏÔÊ¾½ø¶ÈÌõ
+    // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     var progressBar = document.getElementById('progress-bar');
     var width = 0;
     var interval = setInterval(function () {
@@ -302,25 +302,25 @@ function processConfirmation() {
         }
     }, 30);
 
-    // Ö´ÐÐÄúµÄ´¦Àí
-    // ¼ÙÉèÄúÓÐÒ»¸öÃûÎª longRunningProcess µÄº¯ÊýÀ´´¦ÀíÈ·ÈÏ
+    // Ö´ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Îª longRunningProcess ï¿½Äºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½
     longRunningProcess().then(function () {
-        // ´¦ÀíÍê³ÉÊ±Òþ²Ø½ø¶ÈÌõ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½
         clearInterval(interval);
         progressBar.style.width = '0';
     });
 }
 
 function longRunningProcess() {
-    // ÕâÊÇÒ»¸öÊ¾Àýº¯Êý£¬ÄúÓ¦¸Ã½«ÆäÌæ»»ÎªÊµ¼ÊµÄ´¦Àíº¯Êý
+    // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã½ï¿½ï¿½ï¿½ï¿½æ»»ÎªÊµï¿½ÊµÄ´ï¿½ï¿½ï¿½ï¿½ï¿½
     return new Promise(function (resolve) {
-        setTimeout(resolve, 5000);  // ÀýÈç£¬Ä£Äâ5ÃëµÄ´¦ÀíÊ±¼ä
+        setTimeout(resolve, 5000);  // ï¿½ï¿½ï¿½ç£¬Ä£ï¿½ï¿½5ï¿½ï¿½Ä´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
     });
 }
 
 
 
-// µ± "ANY TIME" ¸´Ñ¡¿òµÄ×´Ì¬¸Ä±äÊ±£¬ÆôÓÃ»ò½ûÓÃ "From" ºÍ "To" µÄÏÂÀ­²Ëµ¥
+// ï¿½ï¿½ "ANY TIME" ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½×´Ì¬ï¿½Ä±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ "From" ï¿½ï¿½ "To" ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëµï¿½
 document.getElementById('any-time-checkbox').addEventListener('change', (event) => {
     const fromMonth1 = document.getElementById('from-month1');
     const fromYear1 = document.getElementById('from-year1');
@@ -333,7 +333,7 @@ document.getElementById('any-time-checkbox').addEventListener('change', (event) 
     fromMonth2.disabled = disabled;
     fromYear2.disabled = disabled;
 });
-// µ± "ANY" ¸´Ñ¡¿òµÄ×´Ì¬¸Ä±äÊ±£¬ÆôÓÃ»ò½ûÓÃÑ¡ÔñÓÎÏ·ÀàÐÍ
+// ï¿½ï¿½ "ANY" ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½×´Ì¬ï¿½Ä±ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½
 document.getElementById('any-checkbox').addEventListener('change', (event) => {
     const gameTypeCheckboxes = document.querySelectorAll('input[name="game-type"]:not(#any-checkbox)');
     gameTypeCheckboxes.forEach(checkbox => {
@@ -342,17 +342,17 @@ document.getElementById('any-checkbox').addEventListener('change', (event) => {
 });
 
 
-//µã»÷ÓÎÏ·Ãû´¥·¢
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 document.getElementById('carousel').addEventListener('click', function (event) {
     let target = event.target;
     if (target.classList.contains('game-name')) {
-        nameClicked = true;  // ¸üÐÂ nameClicked ±äÁ¿µÄÖµ
+        nameClicked = true;  // ï¿½ï¿½ï¿½ï¿½ nameClicked ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
         hideMoreInfo();
 
         let gameDisplay = document.getElementById('game-display');
         gameDisplay.style.transform = 'translateX(-300px)';
 
-        // ¼ì²éÊÇ·ñÒÑ´æÔÚ infoBox£¬Èç¹û²»´æÔÚÔò´´½¨ÐÂµÄ infoBox
+        // ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ´ï¿½ï¿½ï¿½ infoBoxï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ò´´½ï¿½ï¿½Âµï¿½ infoBox
         let infoBox = document.querySelector('.info-box');
         if (!infoBox) {
             infoBox = document.createElement('div');
@@ -360,13 +360,13 @@ document.getElementById('carousel').addEventListener('click', function (event) {
             document.getElementById('info-box-container').appendChild(infoBox);
         }
 
-        // ÉèÖÃinfo-boxµÄÄÚÈÝºÍÎ»ÖÃ
+        // ï¿½ï¿½ï¿½ï¿½info-boxï¿½ï¿½ï¿½ï¿½ï¿½Ýºï¿½Î»ï¿½ï¿½
         infoBox.innerHTML = `
             Reason why we choose this game: ${target.dataset.reason}<br><br>
             The information about its price: ${target.dataset.price}
         `;
 
-        // ¸ù¾ÝÐèÒª¶¯Ì¬µ÷Õûinfo-boxµÄrightÊôÐÔ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½info-boxï¿½ï¿½rightï¿½ï¿½ï¿½ï¿½
         let newRightValue = -300
         infoBox.style.right = newRightValue + 'px';
 
@@ -374,7 +374,7 @@ document.getElementById('carousel').addEventListener('click', function (event) {
     }
 });
 
-//¼ÇÂ¼ÊÇ·ñµã»÷ÓÎÏ·Ãû
+//ï¿½ï¿½Â¼ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½
 function hideMoreInfo() {
     const moreInfoElements = document.querySelectorAll('.more-info');
     const gameInfoElements = document.querySelectorAll('.game-info');

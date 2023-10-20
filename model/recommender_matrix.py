@@ -338,10 +338,10 @@ def get_game_details(filtered_recommendations):
     for appid, game_name,reason in filtered_recommendations:
         shop, lowest_price, url = get_current_lowest_price(game_name)
         if lowest_price:
-            print(f"The current lowest price for {game_name} (AppID: {appid}) is: ${lowest_price} at {shop},link is {url}.")
+            print(f"The current lowest price for {game_name.encode('utf-8')} (AppID: {appid}) is: ${lowest_price} at {shop.encode('utf-8')},link is {url.encode('utf-8')}.")
             game_details_list.append((appid, game_name, shop, lowest_price, url,reason))#将游戏的详细信息添加到列表中,增加了reason
         else:
-            print(f"Could not find price data for {game_name} (AppID: {appid}).")
+            print(f"Could not find price data for {game_name.encode('utf-8')} (AppID: {appid}).")
 
     return game_details_list
 
