@@ -1,0 +1,313 @@
+﻿body {
+    font-family: Georgia, sans-serif;
+    margin: 0; /* 移除默认的外边距 */
+    color: rgb(255, 255, 255); /* 设置字体颜色 */
+    overflow: hidden; /* 隐藏滚动条，防止视频背景出现滚动 */
+    font-size: 14px;
+}
+
+#video-background {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1000; /* 确保视频位于内容的下方 */
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+/* 默认格式 */
+#container {
+    position: relative;
+    z-index: 1; /* 确保内容位于视频的上方 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* 确保文本也居中 */
+}
+
+/* 喇叭标志 */
+#speaker-icon {
+    position: absolute;
+    top: 20px;
+    right: 130px;  /* 调整位置 */
+    width: 24px;   /* 调整大小 */
+    height: 24px;
+}
+
+/* 音量滑块 */
+#volume-control {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 100px;
+}
+
+/* 背景透明框 */
+#overlay-box {
+    position: absolute;
+    top: 100px;
+    left: 12%;
+    width: 1250px;
+    height: 730px;
+    background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
+    border-radius: 10px;
+    transition: height 0.3s ease-in-out; /* 添加过渡效果 */
+    z-index: -500; /* 确保它位于其他内容的下方 */
+}
+#logo {
+    font-family: STHupo, sans-serif;
+    margin-top: 50px;
+    font-size: 48px;
+    color: rgb(59, 180, 228);
+}
+
+#input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* 添加间隙 */
+    margin-top: 20px; /* 调整顶部的间隙 */
+}
+
+#confirm-button, #try-again-button {
+    margin-top: 10px; /* 调整按钮的间隙 */
+}
+.input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+#user-id {
+    width: 200px; /* 根据需要调整宽度 */
+}
+/*进度条*/
+#progress-bar-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+}
+
+#progress-bar {
+    width: 0;
+    height: 4px;
+    background-color: #3498db;
+}
+
+#game-title {
+    font-size: 30px;
+    font-family: STHupo, sans-serif;
+    color: rgb(59, 180, 228)
+}
+#recommendations {
+    text-align: center;
+}
+
+#games-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.game-group {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    justify-content: space-evenly;
+    margin: 0 auto; /* center .game-group within #games-list */
+}
+
+#info-box-container {
+    position: relative;
+}
+/*price和reason区域*/
+.info-box {
+    position: absolute;
+    top: 2px; /* 调整为合适的值 */
+    right: 300px; /* 调整为合适的值 */
+    width: 470px;
+    height: 345px;
+    background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
+    border-radius: 10px;
+    display: flex;
+    z-index: 1;
+    text-align: left; /* 文本向左对齐 */
+    color: #ffffff; /* 纯白色字体 */
+    line-height: 1.5; /* 增加行高以在两段之间创建空间 */
+    padding: 10px; /* 添加内填充以确保文本不会贴近边框 */
+}
+
+
+
+#game-display {
+    margin-top: 50px;
+    position: relative;
+    width: 700px; /* 根据需要设置宽度 */
+    margin: auto;
+    overflow: hidden; /* 隐藏溢出的内容 */
+    transition: transform 0.3s ease-out;
+}
+
+.carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* 添加切换动画 */
+}
+
+    .carousel div {
+        min-width: 100%; /* 确保每个div占据全部宽度 */
+        box-sizing: border-box;
+    }
+
+#prev-button, #next-button {
+    border: none;
+    border-radius: 50%;
+    width: 40px; /* 或其他合适的值 */
+    height: 40px; /* 或其他合适的值 */
+    background-color: rgba(255, 255, 255, 0.9); /* 半透明的白色背景 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 添加一点阴影效果 */
+    color: #333; /* 字体颜色 */
+    font-size: 24px; /* 字体大小 */
+    line-height: 40px; /* 使箭头垂直居中 */
+    text-align: center; /* 使箭头水平居中 */
+    opacity: 0.5; /* 调整透明度 */
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+    #prev-button:hover, #next-button:hover {
+        background-color: rgba(255, 255, 255, 0.3); /* 鼠标悬停时的背景颜色 */
+    }
+#prev-button {
+    left: 70px; /* 调整为合适的值 */
+}
+
+#next-button {
+    right: 70px; /* 调整为合适的值 */
+}
+
+#carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#carousel-dots .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    cursor: pointer;
+}
+
+#carousel-dots .dot:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* 鼠标悬停时的背景颜色 */
+}
+
+#carousel-dots .dot.active {
+    width: 40px;
+    height: 10px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.9); /* 活动点的背景颜色 */
+}
+
+#carousel-dots .dot.active:hover {
+    background-color: rgba(255, 255, 255, 0.4); /* 活动点的背景颜色在鼠标悬停时 */
+}
+/* 新添加的样式，设置图片和游戏名字的样式 */
+.carousel img {
+    width: 570px; /* 或者指定固定宽度，例如 width: 300px; */
+    height: 370px; /* 或者指定固定高度，例如 height: 200px; */
+    object-fit: fill; /* 保持图片的宽高比，同时填充容器 */
+    border: none; /* 添加边框 */
+    border-radius: 10px; /* (可选)为图片添加圆角 */
+}
+
+.carousel p {
+    text-align: center; /* 文本居中 */
+    margin: 10px 0; /* 设置上下边距 */
+}
+
+#error-message {
+    color: red;
+    font-weight: bold;
+}
+
+
+
+#info-icon {
+    width: 15px; /* 宽度 */
+    height: 15px; /* 高 */
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position the text above the icon */
+        left: 110%; /* Position the text to the right of the icon */
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+#game-type-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-type-row {
+    margin-left: 100px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px; /* 或者根据需要设置其他值 */
+}
+
+    .game-type-row label {
+        margin-right: 100px; /* 或者根据需要设置其他值 */
+    }
+
+    .game-type-row img {
+        width: 300px;
+        height: 200px;
+        object-fit: fill;
+        display: block;
+        margin-top: 5px; /* 或者根据需要设置其他值 */
+    }
+
+    .any-label {
+        text-align: center; /* 确保文本在标签内居中 */
+    }
+.single-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around; /* 或使用 space-between 或其它值以达到所需的间距效果 */
+}

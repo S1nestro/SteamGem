@@ -342,6 +342,7 @@ def get_game_details(filtered_recommendations):
             game_details_list.append((appid, game_name, shop, lowest_price, url,reason))#将游戏的详细信息添加到列表中,增加了reason
         else:
             print(f"Could not find price data for {game_name.encode('utf-8')} (AppID: {appid}).")
+            game_details_list.append((appid, game_name, None, None, None, reason))
 
     return game_details_list
 

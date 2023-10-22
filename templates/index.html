@@ -4,29 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SteamGem</title>
-    <link rel="stylesheet" href="../static/styles.css">  <!-- 引用外部CSS文件 -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">  <!-- 引用外部CSS文件 -->
 </head>
 <body>
     <video id="video-background" autoplay loop controls>
-        <source src="/static/background.mp4" type="video/mp4">
+        <source src="{{ url_for('static', filename='vedio/background.mp4') }}" type="video/mp4">
         Your browser does not support the video tag.
     </video>
     <div id="container">
         <!-- 添加container保持内容居中 -->
-        <img src="../static/speaker-icon.png" id="speaker-icon" alt="Volume Icon">
+        <img src="{{ url_for('static', filename='images/speaker-icon.png') }}" id="speaker-icon" alt="Volume Icon">
         <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0">
         <div id="logo">SteamGem</div>
         <div id="input-section">
-            <input type="text" id="user-id" placeholder="User ID" required>
+            <div class="input-wrapper">
+                <input type="text" id="user-id" placeholder="User ID" required>
+                <span class="tooltip">
+                    <a href="/guide" target="_blank">
+                         <img src="{{ url_for('static', filename='images/question_mark_icon.png') }}" alt="Info" id="info-icon">
+                    </a>
+                    <span class="tooltiptext" id="tooltip-text">More about User ID</span>
+                </span>
+            </div>
             Game Type:
-            <div id="game-type">
-                <label><input type="checkbox" name="game-type" value="action"> Action</label>
-                <label><input type="checkbox" name="game-type" value="rpg"> RPG</label>
-                <label><input type="checkbox" name="game-type" value="strategy"> Strategy</label>
-                <label><input type="checkbox" name="game-type" value="adventure"> Adventure</label>
-                <label><input type="checkbox" name="game-type" value="simulation"> Simulation</label>
-                <label><input type="checkbox" name="game-type" value="sports and racing"> Sports and Racing</label>
-                <label><input type="checkbox" name="game-type" value="any" id="any-checkbox"> Any</label>
+            <div id="game-type-container">
+                <div class="game-type-row">
+                    <label>
+                        <input type="checkbox" name="game_type" value="Action">
+                        &nbsp;&nbsp;&nbsp;&nbsp;Action&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img src="{{ url_for('static', filename='gametype/Action.jpg') }}" alt="Action Image" class="game-type-image">
+                    </label>
+                    <label>
+                        <input type="checkbox" name="game_type" value="Adventure">
+                        Adventure
+                        <img src="{{ url_for('static', filename='gametype/Adventure.jpg') }}" alt="Adventure Image" class="game-type-image">
+                    </label>
+                    <label>
+                        <input type="checkbox" name="game_type" value="Strategy">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Strategy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img src="{{ url_for('static', filename='gametype/Strategy.jpg') }}" alt="Strategy Image" class="game-type-image">
+                    </label>
+                </div>
+                <div class="game-type-row">
+                    <label>
+                        <input type="checkbox" name="game_type" value="Simulation">
+                        Simulation
+                        <img src="{{ url_for('static', filename='gametype/Simulation.jpg') }}" alt="Simulation Image" class="game-type-image">
+                    </label>
+                    <label>
+                        <input type="checkbox" name="game_type" value="RPG">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RPG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <img src="{{ url_for('static', filename='gametype/RPG.jpg') }}" alt="RPG Image" class="game-type-image">
+                    </label>
+                    <label>
+                        <input type="checkbox" name="game_type" value="Sports and Racing">
+                        Sports and Racing
+                        <img src="{{ url_for('static', filename='gametype/Sports and Racing.jpg') }}" alt="Sports and Racing Image" class="game-type-image">
+                    </label>
+                </div>
+                <div class="game-type-row">
+                    <label class="any-label">
+                        <input type="checkbox" name="game_type" value="Any" id="any-checkbox">
+                        Any Type of Game
+                    </label>
+                </div>
             </div>
             <div id="time-limitation">
                 <div>
@@ -96,8 +137,11 @@
                 <div>
                     ANY TIME: <input type="checkbox" id="any-time-checkbox">
                 </div>
-                <button id="confirm-button" onclick="sendUserData()">Confirm</button>
+                <button id="confirm-button">Confirm</button>
                 <div id="error-message" style="display:none;"></div>  <!-- 错误消息显示区域 -->
+            </div>
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
             </div>
 
             <div id="recommendations">
@@ -130,7 +174,7 @@
                 window.location.reload();
             });
         </script>
-        <script src="../static/scripts.js"></script>
+        <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     </div>
 </body>
 </html>

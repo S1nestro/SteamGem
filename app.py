@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from flask import Flask, request, jsonify, render_template
 from sqlalchemy.orm import sessionmaker
 from extensions import db
-from config import Config
+from config import Config, STEAM_ITEM_URL
 from data.data_manager import fetch_data
 from model.game_recommender import main_recommendation_pipeline
 
@@ -94,25 +96,54 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/receive-data', methods=['POST'])
+@app.route('/guide')
+def guide():
+    return render_template('guide.html')
+
+
+@app.route('/get-recommendations', methods=['POST'])
 def receive_data():
     data = request.json
-    userId = data.get('userId')
-    gameTypes = data.get('gameTypes')
-    fromDate = data.get('fromDate')
-    toDate = data.get('toDate')
+    user_id = data.get('userId')
+    game_type = data.get('gameTypes')
+    fromMonth1 = data.get('fromMonth1')
+    fromYear1 = data.get('fromYear1')
+    fromMonth2 = data.get('fromMonth2')
+    fromYear2 = data.get('fromYear2')
+    anyTimeChecked = data.get('anyTimeChecked')
+
+    fromDate_str = f'{fromYear1}-{fromMonth1}-01'
+    fromDate = datetime.strptime(fromDate_str, '%Y-%m-%d')
+    toDate_str = f'{fromYear2}-{fromMonth2}-01'
+    toDate = datetime.strptime(toDate_str, '%Y-%m-%d')
+
+    if (anyTimeChecked):
+        fromDate=datetime.strptime("1970-01-01", '%Y-%m-%d')
+        toDate=datetime.today()
 
     user_preferences = {
-        "preferred_categories": gameTypes,
+        "preferred_categories": game_type,
         "release_date_range": (fromDate, toDate)
     }
+    response_data = []
 
     with app.app_context():
-        fetch_data(userId)
-        games_with_details = main_recommendation_pipeline(userId, user_preferences, db.session)
+        # fetch_data(userId)
+        games_with_details = main_recommendation_pipeline(user_id, user_preferences, db.session)
         encoded_string = str(games_with_details).encode('utf-8')
         print(encoded_string)
-        return jsonify(games_with_details)
+
+        for item in games_with_details:
+            game_info = {
+                'name': item[1],  # 使用item[1]而不是item[2]获取游戏名称
+                'image': f'https://steamcdn-a.akamaihd.net/steam/apps/{item[0]}/header.jpg',  # 使用f-string格式化URL
+                'price': f'{item[3]} at {item[2] if item[2] is not None else "STEAM"}',  # 使用f-string格式化价格和平台信息，并使用item[2]获取平台名称
+                'link': item[4] if item[4] is not None else f'{STEAM_ITEM_URL}{item[0]}',  # 使用item[4]获取链接
+                'reason': item[5]  # 使用item[5]获取推荐理由
+            }
+            response_data.append(game_info)
+
+        return jsonify(response_data)
 
 
 if __name__ == '__main__':
