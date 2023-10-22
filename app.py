@@ -128,7 +128,7 @@ def receive_data():
     response_data = []
 
     with app.app_context():
-        # fetch_data(userId)
+        # fetch_data(user_id)
         games_with_details = main_recommendation_pipeline(user_id, user_preferences, db.session)
         encoded_string = str(games_with_details).encode('utf-8')
         print(encoded_string)
