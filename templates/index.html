@@ -21,12 +21,12 @@
                 <input type="text" id="user-id" placeholder="User ID" required>
                 <span class="tooltip">
                     <a href="/guide" target="_blank">
-                         <img src="{{ url_for('static', filename='images/question_mark_icon.png') }}" alt="Info" id="info-icon">
+                        <img src="{{ url_for('static', filename='images/question_mark_icon.png') }}" alt="Info" id="info-icon">
                     </a>
                     <span class="tooltiptext" id="tooltip-text">More about User ID</span>
                 </span>
             </div>
-            Game Type:
+            <div class="header-text" id="game-type-header">Preferred Game Type:</div>
             <div id="game-type-container">
                 <div class="game-type-row">
                     <label>
@@ -69,6 +69,7 @@
                     </label>
                 </div>
             </div>
+            <div class="header-text" id="time-range-header">Preferred Time Range:</div>
             <div id="time-limitation">
                 <div>
                     From: <select id="from-month1" required>
