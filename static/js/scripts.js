@@ -35,38 +35,26 @@ let carouselInterval;
 let carouselDisplayed = false;
 
 
-//更新进度条
-function updateProgressBar() {
-    // 清除已有的进度条计时器
-    clearInterval(progressBarInterval);
-
-    progressBarInterval = setInterval(() => {
-        // 每个时间间隔增加进度条的值
-        progressBarValue += 2;  // 每100毫秒增加2%，总共需要5秒（5000毫秒）从0%递增到100%
-
-        // 更新进度条的宽度
-        document.getElementById('progress-bar').style.width = progressBarValue + '%';
-
-        // 当进度条值达到100%时，清除计时器并显示轮播图
-        if (progressBarValue >= 100) {
-            clearInterval(progressBarInterval);
-            if (!carouselDisplayed) {
-                displayCarousel();
-            }
-        }
-
-        // 如果轮播图已显示，重置进度条值并清除计时器
-        if (carouselDisplayed) {
-            progressBarValue = 0;
-            document.getElementById('progress-bar').style.width = '0%';
-            clearInterval(progressBarInterval);
-        }
-    }, 100);  // 100毫秒更新一次进度条值
-}
-
 function displayCarousel() {
     // 这里是显示轮播图的代码
     carouselDisplayed = true;
+}
+//彩虹色
+function updateWordColors() {
+    const colors = ['#FFFF00', '#FFFFFF', '#ADD8E6', '#FFA500', '#90EE90', '#FF4500'];  // 定义颜色数组
+    const gameItems = document.querySelectorAll('.game-item');  // 选择所有的 game-item 元素
+
+    gameItems.forEach((gameItem, itemIndex) => {
+        const words = gameItem.innerText.split(' ');  // 分割文本为单词
+        gameItem.innerHTML = '';  // 清空原有内容
+        
+        words.forEach((word, wordIndex) => {
+            const span = document.createElement('span');
+            span.innerText = word + ' ';  // 添加单词和一个空格
+            span.style.color = colors[(itemIndex * words.length + wordIndex) % colors.length];  // 应用颜色
+            gameItem.appendChild(span);  // 将 span 元素添加到 game-item 元素
+        });
+    });
 }
 function displayRecommendations() {
     currentGameIndex = 0;
@@ -102,6 +90,12 @@ function displayRecommendations() {
             <div class="game-info"></div>  <!-- 新增游戏信息容器 -->
         `;
         carousel.appendChild(gameDiv);
+        // 隐藏选择部分
+        document.getElementById('game-type-container').style.display = 'none';
+        document.getElementById('time-limitation').style.display = 'none';
+        document.getElementById('game-type-header').style.display = 'none';
+        document.getElementById('time-range-header').style.display = 'none';
+
     });
 
     // 如果这是首次显示推荐，则显示标题和"Try Again"按钮
@@ -143,8 +137,10 @@ function displayRecommendations() {
 
     // 在展示推荐时改变方框的大小
     const overlayBox = document.getElementById('overlay-box');
-    overlayBox.style.height = '390px';
+    overlayBox.style.height = '380px';
     updateProgressBar();  // 在显示推荐时开始运行进度条
+
+    updateWordColors();  // 更新单词的颜色
 }
 
 function updateDots() {
@@ -198,7 +194,10 @@ document.getElementById('next-button').addEventListener('click', () => {
     currentGameIndex = (currentGameIndex + 1) % responseData.length;
     updateCarousel();
 });
-// Confirm(把这个函数整个替换原来的)
+
+var width = 0;  // 将width变量移动到外部作用域
+
+// Confirm
 document.getElementById('confirm-button').addEventListener('click', () => {
     const userId = document.getElementById('user-id').value;
     const gameTypeCheckboxes = document.querySelectorAll('input[name="game_type"]');
@@ -227,6 +226,8 @@ document.getElementById('confirm-button').addEventListener('click', () => {
             gameTypes = ['Action', 'Adventure', 'Strategy', 'Simulation', 'RPG', 'Sports and Racing'];
         }
 
+        var progressBarInterval = startProgressBar();  // 在这里开始进度条
+
         // 发送请求到后端并处理返回的数据
         fetch('/get-recommendations', {
             method: 'POST',
@@ -240,50 +241,56 @@ document.getElementById('confirm-button').addEventListener('click', () => {
                 fromYear1: fromYear1,
                 fromMonth2: fromMonth2,
                 fromYear2: fromYear2,
-                anyTimeChecked: anyTimeChecked,//(这行是新增的)
+                anyTimeChecked: anyTimeChecked,
                 // ...其他需要发送到后端的数据
             }),
         })
             .then(response => response.json())
             .then(data => {
+                clearInterval(progressBarInterval);  // 停止进度条的增长（如果它还在增长）
+                finishProgressBar(progressBarInterval);  // 完成进度条，并传递interval对象
                 responseData = data;  // 假设responseData是一个全局变量
+
                 displayRecommendations();
             })
-            .catch(error => console.error('Error:', error));
-    }
-});
-
+            .catch(error => {
+                clearInterval(progressBarInterval);  // 在发生错误时停止进度条的增长
+                console.error('Error:', error);
+            });
+        }
+    });
 //进度条
-function processConfirmation() {
+var currentWidth = 0;  // 定义一个全局变量来跟踪进度条的当前宽度
+
+function startProgressBar() {
     // 显示进度条
     var progressBar = document.getElementById('progress-bar');
-    var width = 0;
     var interval = setInterval(function () {
-        if (width >= 100) {
-            clearInterval(interval);
+        if (currentWidth >= 95) {
+            clearInterval(interval);  // 当进度条达到95%时停止
         } else {
-            width++;
-            progressBar.style.width = width + '%';
+            currentWidth++;
+            progressBar.style.width = currentWidth + '%';
         }
     }, 30);
-
-    // 执行您的处理
-    // 假设您有一个名为 longRunningProcess 的函数来处理确认
-    longRunningProcess().then(function () {
-        // 处理完成时隐藏进度条
-        clearInterval(interval);
-        progressBar.style.width = '0';
-    });
+    return interval;  // 返回interval，以便稍后可以清除它
 }
 
-function longRunningProcess() {
-    // 这是一个示例函数，您应该将其替换为实际的处理函数
-    return new Promise(function (resolve) {
-        setTimeout(resolve, 5000);  // 例如，模拟5秒的处理时间
-    });
+function finishProgressBar(interval) {
+    clearInterval(interval);  // 清除现有的interval，确保进度条不会重新开始
+    var progressBar = document.getElementById('progress-bar');
+    var finishInterval = setInterval(function () {
+        if (currentWidth >= 100) {
+            clearInterval(finishInterval);  // 当进度条达到100%时停止
+            setTimeout(function () {
+                progressBar.style.width = '0';  // 在短暂的延迟后隐藏进度条
+            }, 500);  // 500毫秒的延迟是可调的，您可以根据需要更改它
+        } else {
+            currentWidth++;
+            progressBar.style.width = currentWidth + '%';
+        }
+    }, 30);
 }
-
-
 
 // 当 "ANY TIME" 复选框的状态改变时，启用或禁用 "From" 和 "To" 的下拉菜单
 document.getElementById('any-time-checkbox').addEventListener('change', (event) => {
@@ -325,19 +332,42 @@ document.getElementById('carousel').addEventListener('click', function (event) {
             document.getElementById('info-box-container').appendChild(infoBox);
         }
 
-        // 设置info-box的内容和位置
+        // 提取理由和价格信息
+        let reasonInfo = `Reason why we choose this game: ${target.dataset.reason}`;
+        let priceInfo = `The information about its price: ${target.dataset.price}`;
+
+        // 检查 "experience with" 和 ", which had" 之间的文本，并将其颜色更改为 #d1a655
+        let experienceRegex = /(experience with)(.*)(, which had)/;
+        if (experienceRegex.test(reasonInfo)) {
+            reasonInfo = reasonInfo.replace(experienceRegex, '$1<span class="highlighted-text">$2</span>$3');
+        }
+
+        // 检查 "The information about its price: " 和 " U.S. dollar" 之间的文本，并将其颜色更改为 #d1a655
+        let priceStartIndex = priceInfo.indexOf('The information about its price: ') + 'The information about its price: '.length;
+        let priceEndIndex = priceInfo.indexOf(' U.S. dollar');
+        if (priceStartIndex > -1 && priceEndIndex > -1) {
+            priceInfo = priceInfo.substring(0, priceStartIndex) +
+                '<span class="highlighted-text">' + priceInfo.substring(priceStartIndex, priceEndIndex) + '</span>' +
+                priceInfo.substring(priceEndIndex);
+        }
+
+        // 将修改后的理由和价格信息设置为 infoBox 的内容
         infoBox.innerHTML = `
-            Reason why we choose this game: ${target.dataset.reason}<br><br>
-            The information about its price: ${target.dataset.price}
-        `;
+    <br>
+    ${reasonInfo}<br><br>
+    ${priceInfo}
+`;
 
         // 根据需要动态调整info-box的right属性
-        let newRightValue = -200
+        let newRightValue = -200;
         infoBox.style.right = newRightValue + 'px';
 
         infoBox.style.display = 'block';
     }
 });
+
+
+
 
 //记录是否点击游戏名
 function hideMoreInfo() {

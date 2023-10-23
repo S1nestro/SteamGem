@@ -3,7 +3,7 @@
     margin: 0; /* 移除默认的外边距 */
     color: rgb(255, 255, 255); /* 设置字体颜色 */
     overflow: hidden; /* 隐藏滚动条，防止视频背景出现滚动 */
-    font-size: 14px;
+    font-size: 16px;
 }
 
 #video-background {
@@ -49,12 +49,13 @@
 /* 背景透明框 */
 #overlay-box {
     position: absolute;
-    top: 100px;
+    top: 120px;
     left: 12%;
     width: 1250px;
-    height: 730px;
+    height: 770px;
     background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
     border-radius: 10px;
+    border: 5px solid #ffffff; /* 添加白色边框 */
     transition: height 0.3s ease-in-out; /* 添加过渡效果 */
     z-index: -500; /* 确保它位于其他内容的下方 */
 }
@@ -63,6 +64,7 @@
     margin-top: 50px;
     font-size: 48px;
     color: rgb(59, 180, 228);
+    margin-bottom: 25px;
 }
 
 #input-section {
@@ -73,15 +75,59 @@
     margin-top: 20px; /* 调整顶部的间隙 */
 }
 
-#confirm-button, #try-again-button {
-    margin-top: 10px; /* 调整按钮的间隙 */
+/* 区域标题 */
+.header-text {
+    font-size: 20px;
+    color: rgb(172, 205, 24, 1);
 }
+
+/* 确认按钮样式 */
+#confirm-button {
+    background-color: rgb(172, 205, 24, 1);
+    color: white;
+    border: none;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.1s;
+    margin-top: 20px;
+    border-radius: 3px;
+}
+
+    #confirm-button:hover {
+        background-color: #d1a655; /* 或任何稍微深一点的黄色 */
+    }
+
+    #confirm-button:active {
+        opacity: 0.5;
+    }
+
+/* 重试按钮样式 */
+#try-again-button {
+    background-color: gray;
+    color: white;
+    border: none;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, opacity 0.1s;
+    margin-top: 3px;
+    border-radius: 3px;
+}
+
+    #try-again-button:hover {
+        background-color: rgb(6, 5, 2); /* 黑色 */
+    }
+
+    #try-again-button:active {
+        opacity: 0.3;
+    }
+
 .input-wrapper {
     position: relative;
     display: inline-block;
 }
 
 #user-id {
+    margin-bottom: 10px;
     width: 200px; /* 根据需要调整宽度 */
 }
 /*进度条*/
@@ -101,28 +147,31 @@
 }
 
 #game-title {
-    font-size: 30px;
+    font-size: 34px;
     font-family: STHupo, sans-serif;
-    color: rgb(59, 180, 228)
+    color: rgb(59, 180, 228);
+    margin-top: 30px;
 }
 #recommendations {
     text-align: center;
 }
 
 #games-list {
+    font-size: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 800px;
+    max-width: 3600px;
+    margin-top: 40px;
 }
 
 .game-group {
     width: 100%;
-    max-width: 600px;
+    max-width: 3600px;
     display: flex;
-    justify-content: space-evenly;
-    margin: 0 auto; /* center .game-group within #games-list */
+    justify-content: space-between;
+    margin: 0 auto 20px auto; /* 20px 是下边距，您可以根据需要调整该值 */
 }
 
 #info-box-container {
@@ -131,12 +180,13 @@
 /*price和reason区域*/
 .info-box {
     position: absolute;
-    top: 2px; /* 调整为合适的值 */
+    top: 20px; /* 调整为合适的值 */
     right: 300px; /* 调整为合适的值 */
     width: 470px;
-    height: 345px;
+    height: 270px;
     background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
     border-radius: 10px;
+    border: 5px solid #d1a655; /* 添加边框 */
     display: flex;
     z-index: 1;
     text-align: left; /* 文本向左对齐 */
@@ -144,7 +194,10 @@
     line-height: 1.5; /* 增加行高以在两段之间创建空间 */
     padding: 10px; /* 添加内填充以确保文本不会贴近边框 */
 }
-
+/*info-box里的变色*/
+.highlighted-text {
+    color: #d1a655;
+}
 
 
 #game-display {
@@ -157,6 +210,7 @@
 }
 
 .carousel {
+    margin-top: 20px;
     display: flex;
     transition: transform 0.5s ease-in-out; /* 添加切换动画 */
 }
@@ -229,7 +283,7 @@
 /* 新添加的样式，设置图片和游戏名字的样式 */
 .carousel img {
     width: 570px; /* 或者指定固定宽度，例如 width: 300px; */
-    height: 370px; /* 或者指定固定高度，例如 height: 200px; */
+    height: 300px; /* 或者指定固定高度，例如 height: 200px; */
     object-fit: fill; /* 保持图片的宽高比，同时填充容器 */
     border: none; /* 添加边框 */
     border-radius: 10px; /* (可选)为图片添加圆角 */
