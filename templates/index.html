@@ -12,7 +12,6 @@
         Your browser does not support the video tag.
     </video>
     <div id="container">
-        <!-- 添加container保持内容居中 -->
         <img src="{{ url_for('static', filename='images/speaker-icon.png') }}" id="speaker-icon" alt="Volume Icon">
         <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0">
         <div id="logo">SteamGem</div>
@@ -148,21 +147,21 @@
             <div id="recommendations">
                 <div id="game-title" style="display:none;">Top 10 recommended games</div>
                 <div id="games-list">
-                    <!-- 游戏列表会在这里动态生成 -->
+                    <!-- 游戏列表 -->
                 </div>
                 <div id="game-display-wrapper" style="margin-top: 20px;">
                     <div id="info-box-container"></div>
                     <div id="game-display">
-                        <!-- 单个游戏的显示会在这里动态生成 -->
+                        <!-- 单个游戏的显示 -->
                         <div id="carousel" class="carousel">
-                            <!-- 轮播项目将在此动态生成 -->
+                            <!-- 轮播图 -->
                         </div>
                         <button id="prev-button">&#60;</button>
                         <button id="next-button">&#62;</button>
-                        <div id="carousel-dots"></div>  <!-- 新增的圆点容器 -->
+                        <div id="carousel-dots"></div>  <!-- 圆点容器 -->
                     </div>
                     <div id="game-name">
-                        <!-- 当前游戏的名字将在这里显示 -->
+                        <!-- 当前游戏的名字 -->
                     </div>
                 </div>
             </div>
