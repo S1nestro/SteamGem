@@ -1,9 +1,9 @@
 ﻿body {
     font-family: Georgia, sans-serif;
-    margin: 0; /* 移除默认的外边距 */
+    margin: 0; /* 默认没有外边距 */
     color: rgb(255, 255, 255); /* 设置字体颜色 */
-    overflow: hidden; /* 隐藏滚动条，防止视频背景出现滚动 */
     font-size: 16px;
+    overflow: auto;
 }
 
 #video-background {
@@ -22,19 +22,37 @@
 /* 默认格式 */
 #container {
     position: relative;
-    z-index: 1; /* 确保内容位于视频的上方 */
+    z-index: 1; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center; /* 确保文本也居中 */
+    text-align: center;
+    overflow: auto;
 }
+
+/* 滚动条的宽度和背景颜色 */
+::-webkit-scrollbar {
+    width: 12px;
+    background-color: #f5f5f5;
+}
+
+/* 滚动条滑块的样式 */
+::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px; /* 滑块圆角 */
+}
+
+    /* 滚动条滑块的悬停样式 */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+    }
 
 /* 喇叭标志 */
 #speaker-icon {
     position: absolute;
     top: 20px;
-    right: 130px;  /* 调整位置 */
-    width: 24px;   /* 调整大小 */
+    right: 130px;
+    width: 24px;
     height: 24px;
 }
 
@@ -55,9 +73,9 @@
     height: 770px;
     background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
     border-radius: 10px;
-    border: 5px solid #ffffff; /* 添加白色边框 */
-    transition: height 0.3s ease-in-out; /* 添加过渡效果 */
-    z-index: -500; /* 确保它位于其他内容的下方 */
+    border: 5px solid #ffffff; /* 白色边框 */
+    transition: height 0.3s ease-in-out; /* 过渡效果 */
+    z-index: -500; /* 其他内容的下方且在视频上方 */
 }
 #logo {
     font-family: STHupo, sans-serif;
@@ -71,17 +89,17 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px; /* 添加间隙 */
-    margin-top: 20px; /* 调整顶部的间隙 */
+    gap: 10px; /* 间距控制 */
+    margin-top: 20px; /* 顶部间距 */
 }
 
-/* 区域标题 */
+/* 选择框的标题 */
 .header-text {
     font-size: 20px;
     color: rgb(172, 205, 24, 1);
 }
 
-/* 确认按钮样式 */
+/* confirm按钮 */
 #confirm-button {
     background-color: rgb(172, 205, 24, 1);
     color: white;
@@ -101,7 +119,7 @@
         opacity: 0.5;
     }
 
-/* 重试按钮样式 */
+/* Try Again按钮 */
 #try-again-button {
     background-color: gray;
     color: white;
@@ -114,7 +132,7 @@
 }
 
     #try-again-button:hover {
-        background-color: rgb(6, 5, 2); /* 黑色 */
+        background-color: rgb(6, 5, 2);
     }
 
     #try-again-button:active {
@@ -128,7 +146,7 @@
 
 #user-id {
     margin-bottom: 10px;
-    width: 200px; /* 根据需要调整宽度 */
+    width: 200px;
 }
 /*进度条*/
 #progress-bar-container {
@@ -171,7 +189,7 @@
     max-width: 3600px;
     display: flex;
     justify-content: space-between;
-    margin: 0 auto 20px auto; /* 20px 是下边距，您可以根据需要调整该值 */
+    margin: 0 auto 20px auto; /* 上边距和下边距 */
 }
 
 #info-box-container {
@@ -180,19 +198,19 @@
 /*price和reason区域*/
 .info-box {
     position: absolute;
-    top: 20px; /* 调整为合适的值 */
-    right: 300px; /* 调整为合适的值 */
+    top: 20px;
+    right: 300px;
     width: 470px;
     height: 270px;
     background-color: rgba(128, 128, 128, 0.3); /* 透明 灰色 */
     border-radius: 10px;
-    border: 5px solid #d1a655; /* 添加边框 */
+    border: 5px solid #d1a655; /* 边框 */
     display: flex;
     z-index: 1;
-    text-align: left; /* 文本向左对齐 */
-    color: #ffffff; /* 纯白色字体 */
-    line-height: 1.5; /* 增加行高以在两段之间创建空间 */
-    padding: 10px; /* 添加内填充以确保文本不会贴近边框 */
+    text-align: left; /* 左对齐 */
+    color: #ffffff; /* 字体颜色 */
+    line-height: 1.5; /* 行间距 */
+    padding: 10px; /* 内填充确保文本不会过于贴近边框 */
 }
 /*info-box里的变色*/
 .highlighted-text {
@@ -203,49 +221,50 @@
 #game-display {
     margin-top: 50px;
     position: relative;
-    width: 700px; /* 根据需要设置宽度 */
+    width: 700px;
     margin: auto;
-    overflow: hidden; /* 隐藏溢出的内容 */
+    overflow: hidden;
     transition: transform 0.3s ease-out;
 }
 
 .carousel {
     margin-top: 20px;
     display: flex;
-    transition: transform 0.5s ease-in-out; /* 添加切换动画 */
+    transition: transform 0.5s ease-in-out; /* 切换动画 */
 }
 
     .carousel div {
-        min-width: 100%; /* 确保每个div占据全部宽度 */
+        min-width: 100%;
         box-sizing: border-box;
     }
 
 #prev-button, #next-button {
+    display: none;
     border: none;
     border-radius: 50%;
-    width: 40px; /* 或其他合适的值 */
-    height: 40px; /* 或其他合适的值 */
+    width: 40px;
+    height: 40px;
     background-color: rgba(255, 255, 255, 0.9); /* 半透明的白色背景 */
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 添加一点阴影效果 */
-    color: #333; /* 字体颜色 */
-    font-size: 24px; /* 字体大小 */
-    line-height: 40px; /* 使箭头垂直居中 */
-    text-align: center; /* 使箭头水平居中 */
-    opacity: 0.5; /* 调整透明度 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+    color: #333;
+    font-size: 24px;
+    line-height: 40px;
+    text-align: center;
+    opacity: 0.5; /* 透明度 */
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
 }
 
     #prev-button:hover, #next-button:hover {
-        background-color: rgba(255, 255, 255, 0.3); /* 鼠标悬停时的背景颜色 */
+        background-color: rgba(255, 255, 255, 0.3);
     }
 #prev-button {
-    left: 70px; /* 调整为合适的值 */
+    left: 70px;
 }
 
 #next-button {
-    right: 70px; /* 调整为合适的值 */
+    right: 70px;
 }
 
 #carousel-dots {
@@ -267,7 +286,7 @@
 }
 
 #carousel-dots .dot:hover {
-    background-color: rgba(255, 255, 255, 0.4); /* 鼠标悬停时的背景颜色 */
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 #carousel-dots .dot.active {
@@ -278,20 +297,20 @@
 }
 
 #carousel-dots .dot.active:hover {
-    background-color: rgba(255, 255, 255, 0.4); /* 活动点的背景颜色在鼠标悬停时 */
+    background-color: rgba(255, 255, 255, 0.4);
 }
-/* 新添加的样式，设置图片和游戏名字的样式 */
+/* 图片和游戏名字 */
 .carousel img {
-    width: 570px; /* 或者指定固定宽度，例如 width: 300px; */
-    height: 300px; /* 或者指定固定高度，例如 height: 200px; */
-    object-fit: fill; /* 保持图片的宽高比，同时填充容器 */
-    border: none; /* 添加边框 */
-    border-radius: 10px; /* (可选)为图片添加圆角 */
+    width: 570px;
+    height: 300px;
+    object-fit: fill;
+    border: none;
+    border-radius: 10px;
 }
 
 .carousel p {
-    text-align: center; /* 文本居中 */
-    margin: 10px 0; /* 设置上下边距 */
+    text-align: center;
+    margin: 10px 0; /* 上下边距 */
 }
 
 #error-message {
@@ -302,8 +321,8 @@
 
 
 #info-icon {
-    width: 15px; /* 宽度 */
-    height: 15px; /* 高 */
+    width: 15px;
+    height: 15px;
 }
 
 .tooltip {
@@ -320,8 +339,8 @@
         padding: 5px 0;
         position: absolute;
         z-index: 1;
-        bottom: 125%; /* Position the text above the icon */
-        left: 110%; /* Position the text to the right of the icon */
+        bottom: 125%;
+        left: 110%;
         margin-left: -60px;
         opacity: 0;
         transition: opacity 0.3s;
@@ -342,11 +361,11 @@
     margin-left: 100px;
     display: flex;
     justify-content: center;
-    margin-bottom: 10px; /* 或者根据需要设置其他值 */
+    margin-bottom: 10px;
 }
 
     .game-type-row label {
-        margin-right: 100px; /* 或者根据需要设置其他值 */
+        margin-right: 100px;
     }
 
     .game-type-row img {
@@ -354,14 +373,14 @@
         height: 200px;
         object-fit: fill;
         display: block;
-        margin-top: 5px; /* 或者根据需要设置其他值 */
+        margin-top: 5px;
     }
 
     .any-label {
-        text-align: center; /* 确保文本在标签内居中 */
+        text-align: center;
     }
 .single-row {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around; /* 或使用 space-between 或其它值以达到所需的间距效果 */
+    justify-content: space-around;
 }
