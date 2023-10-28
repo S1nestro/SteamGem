@@ -203,21 +203,21 @@ def predict_user_rating_for_game(user_id, game_id, game_similarity, user_game_da
                                            ))
                 
                 # 第一种解法，如果游戏类型相同，贡献度乘以1.4,越相同推荐的越多
-                for game_type in game_data[game_id]['types'] :
-                    for other_game_type in game_data[other_game_id]['types'] :
-                        if game_type == other_game_type :
-                            individual_contribution = individual_contribution * 1.4 #如果游戏类型相同，贡献度乘以1.4,越相同推荐的越多
-                            break
-                # 第二种解法，如果游戏类型相同，贡献度乘以2.0，只要匹配一个类型就乘以2.0并且不再计算其他东西
-                # found_match = False  # 添加一个标志
-                # for game_type in game_data[game_id]['types']:
-                #     if found_match:  # 如果标志为真，则跳过后续迭代
-                #         break
-                #     for other_game_type in game_data[other_game_id]['types']:
-                #         if game_type == other_game_type:
-                #             individual_contribution = individual_contribution * 2.0
-                #             found_match = True  # 设置标志为真
+                # for game_type in game_data[game_id]['types'] :
+                #     for other_game_type in game_data[other_game_id]['types'] :
+                #         if game_type == other_game_type :
+                #             individual_contribution = individual_contribution * 1.4 #如果游戏类型相同，贡献度乘以1.4,越相同推荐的越多
                 #             break
+                # 第二种解法，如果游戏类型相同，贡献度乘以2.0，只要匹配一个类型就乘以2.0并且不再计算其他东西
+                found_match = False  # 添加一个标志
+                for game_type in game_data[game_id]['types']:
+                    if found_match:  # 如果标志为真，则跳过后续迭代
+                        break
+                    for other_game_type in game_data[other_game_id]['types']:
+                        if game_type == other_game_type:
+                            individual_contribution = individual_contribution * 2.0
+                            found_match = True  # 设置标志为真
+                            break
 
                 # 存储该游戏的贡献度
                 contribution_details[other_game_id] = individual_contribution

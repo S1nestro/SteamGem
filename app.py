@@ -7,6 +7,7 @@ from config import Config, STEAM_ITEM_URL
 from data.data_manager import fetch_data
 from model.game_recommender import main_recommendation_pipeline
 
+
 # app = Flask(__name__)
 #
 # @app.route('/receive-data', methods=['POST'])
@@ -118,8 +119,8 @@ def receive_data():
     toDate = datetime.strptime(toDate_str, '%Y-%m-%d')
 
     if (anyTimeChecked):
-        fromDate=datetime.strptime("1970-01-01", '%Y-%m-%d')
-        toDate=datetime.today()
+        fromDate = datetime.strptime("1970-01-01", '%Y-%m-%d')
+        toDate = datetime.today()
 
     user_preferences = {
         "preferred_categories": game_type,
@@ -137,7 +138,10 @@ def receive_data():
             game_info = {
                 'name': item[1],  # 使用item[1]而不是item[2]获取游戏名称
                 'image': f'https://steamcdn-a.akamaihd.net/steam/apps/{item[0]}/header.jpg',  # 使用f-string格式化URL
-                'price': f'{item[3]} at {item[2] if item[2] is not None else "STEAM"}',  # 使用f-string格式化价格和平台信息，并使用item[2]获取平台名称
+                'price': "The lowest price is on the STEAM platform currently."
+                if item[2] is None or item[3] is None
+                else f'{item[3]} U.S. dollar at {item[2] if item[2] is not None else "STEAM"}',
+                # 使用f-string格式化价格和平台信息，并使用item[2]获取平台名称
                 'link': item[4] if item[4] is not None else f'{STEAM_ITEM_URL}{item[0]}',  # 使用item[4]获取链接
                 'reason': item[5]  # 使用item[5]获取推荐理由
             }
